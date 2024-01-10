@@ -138,7 +138,15 @@ public class DistrictServiceImpl extends ServiceImpl<DistrictMapper, District> i
 
     @Override
     public List<District> likeName(String name) {
-        LambdaQueryWrapper<District> query = new LambdaQueryWrapper<District>().likeRight(District::getName, name).orderByAsc(District::getId);
+        /**
+         * where name like '武汉%' and (level = country or level = province or level = city)
+         */
+        LambdaQueryWrapper<District> query = new LambdaQueryWrapper<District>().likeRight(District::getName, name)
+                .and(q -> q.or().eq(District::getLevel, District.LEVEL_COUNTRY)
+                        .or().eq(District::getLevel, District.LEVEL_PROVINCE)
+                        .or().eq(District::getLevel, District.LEVEL_CITY)
+                )
+                .orderByAsc(District::getId);
         return list(query);
     }
 

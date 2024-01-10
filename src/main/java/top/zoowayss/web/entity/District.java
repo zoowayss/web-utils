@@ -15,6 +15,13 @@ import java.util.List;
 @NoArgsConstructor
 @TableName(value = "t_district")
 public class District {
+
+    public static final String LEVEL_COUNTRY = "country";
+    public static final String LEVEL_PROVINCE = "province";
+    public static final String LEVEL_CITY = "city";
+    public static final String LEVEL_STREET = "street";
+    public static final String LEVEL_DISTRICT = "district";
+
     @TableId(value = "id", type = IdType.ASSIGN_ID)
     private String id;
 
