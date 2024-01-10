@@ -26,12 +26,24 @@ public class AreaController {
 
     /**
      * 通过 city 获取地图信息
-     * @param appid
-     * @param city
+     * @param appid 应用id
+     * @param city 名称
      * @return
      */
     @GetMapping("/{city}")
     public ApiResult<?> list(@AppId String appid, @PathVariable String city) {
         return ApiResult.success(districtService.listCity(city));
+    }
+
+
+    /**
+     * 根据行政区划的名称模糊查询
+     * @param appid 应用id
+     * @param name 名称
+     * @return
+     */
+    @GetMapping("/name/{name}")
+    public ApiResult<?> likeName(@AppId String appid, @PathVariable String name){
+        return  ApiResult.success(districtService.likeName(name));
     }
 }

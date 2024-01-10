@@ -136,6 +136,12 @@ public class DistrictServiceImpl extends ServiceImpl<DistrictMapper, District> i
         return list;
     }
 
+    @Override
+    public List<District> likeName(String name) {
+        LambdaQueryWrapper<District> query = new LambdaQueryWrapper<District>().likeRight(District::getName, name).orderByAsc(District::getId);
+        return list(query);
+    }
+
     private void buildTree(List<District> list, Map<String, List<District>> disMap) {
         if (CollectionUtils.isEmpty(list)) {
             return;

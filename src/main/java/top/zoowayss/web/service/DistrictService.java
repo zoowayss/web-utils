@@ -17,4 +17,6 @@ public interface DistrictService extends IService<District> {
     void refreshAMap();
 
     List<District> listCity(String cid);
+
+    List<District> likeName(String name);
 }
