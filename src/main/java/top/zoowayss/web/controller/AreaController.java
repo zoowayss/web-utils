@@ -18,12 +18,18 @@ import javax.annotation.Resource;
  */
 
 @RestController
-@RequestMapping("/app/amap")
-public class AMapController {
+@RequestMapping("/app/area")
+public class AreaController {
 
     @Resource
     private DistrictService districtService;
 
+    /**
+     * 通过 city 获取地图信息
+     * @param appid
+     * @param city
+     * @return
+     */
     @GetMapping("/{city}")
     public ApiResult<?> list(@AppId String appid, @PathVariable String city) {
         return ApiResult.success(districtService.listCity(city));
