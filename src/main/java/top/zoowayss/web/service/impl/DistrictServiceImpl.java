@@ -38,13 +38,13 @@ public class DistrictServiceImpl extends ServiceImpl<DistrictMapper, District> i
     @Value("${amap.request-url}")
     public String requestUrl;
 
+    @Transactional
     @Override
     public boolean saveBatch(Collection<District> entityList) {
         Collection<District> saveList = new ArrayList<>(1000);
         if (CollectionUtils.isEmpty(entityList)) {
             return false;
         }
-
         Iterator<District> itr = entityList.iterator();
         while (itr.hasNext()) {
             saveList.add(itr.next());
@@ -86,7 +86,7 @@ public class DistrictServiceImpl extends ServiceImpl<DistrictMapper, District> i
         AssertUtil.isTrue(1 == mapResponse.getStatus(), "load district data from gaoDe api failed");
         List<DistrictDto> districts = mapResponse.getDistricts();
         List<District> saveList = new ArrayList<>(44000);
-//        List<DoubleField<String, DistrictDto>> keys = generateRedisKeys(districts);
+//        List<Pair<String, DistrictDto>> keys = generateRedisKeys(districts);
         spreadDistrictsTree(new AtomicInteger(0), "0", districts, saveList);
         this.remove(new QueryWrapper<>());
         this.saveBatch(saveList);
@@ -129,11 +129,11 @@ public class DistrictServiceImpl extends ServiceImpl<DistrictMapper, District> i
     @Override
     public List<District> listCity(String cid) {
 
-        List<District> list = super.list(new LambdaQueryWrapper<District>().eq(District::getPid, cid));
+        List<District> list = super.list(new LambdaQueryWrapper<District>()
+                        .select(District::getId,District::getLevel,District::getName,District::getPid,District::getCenter)
+                .eq(District::getPid, cid));
 
-        Map<String, List<District>> listMap = findAllList(list).stream().collect(Collectors.groupingBy(District::getPid));
-        buildTree(list, listMap);
-        return list;
+        return findAllList(list);
     }
 
     @Override
@@ -150,24 +150,14 @@ public class DistrictServiceImpl extends ServiceImpl<DistrictMapper, District> i
         return list(query);
     }
 
-    private void buildTree(List<District> list, Map<String, List<District>> disMap) {
-        if (CollectionUtils.isEmpty(list)) {
-            return;
-        }
-
-
-        for (District district : list) {
-            district.setDistricts(disMap.get(district.getId()));
-            buildTree(district.getDistricts(), disMap);
-        }
-    }
-
     private List<District> findAllList(List<District> list) {
         if (CollectionUtils.isEmpty(list)) {
             return Collections.emptyList();
         }
 
-        List<District> subLists = super.list(new LambdaQueryWrapper<District>().in(District::getPid, list.stream().map(District::getId).collect(Collectors.toList())));
+        List<District> subLists = super.list(new LambdaQueryWrapper<District>()
+                .select(District::getId,District::getLevel,District::getName,District::getPid,District::getCenter)
+                .in(District::getPid, list.stream().map(District::getId).collect(Collectors.toList())));
 
         if (!CollectionUtils.isEmpty(subLists)) {
             list.addAll(findAllList(subLists));

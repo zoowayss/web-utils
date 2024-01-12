@@ -1,6 +1,7 @@
 package top.zoowayss.web.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,6 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @TableName(value = "t_district")
+@JsonInclude(value = JsonInclude.Include.NON_EMPTY)
 public class District {
 
     public static final String LEVEL_COUNTRY = "country";
