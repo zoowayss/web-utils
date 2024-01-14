@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 @Component
 @ConditionalOnProperty(prefix = "task.a-map", name = "enabled", havingValue = "true")
 @Slf4j
-public class AMapReFreshTask implements InitializingBean {
+public class AreaAutoFreshTask implements InitializingBean {
 
     @Resource
     private DistrictService districtService;
